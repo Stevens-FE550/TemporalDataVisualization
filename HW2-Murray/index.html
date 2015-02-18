@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <meta name="description" content="Assignment Time Series">
+	<meta name="keywords" content="FE550">
+	<meta name="author" content="Shawn Murray">
+    
+  	<script src="http://d3js.org/d3.v3.min.js"></script>
+  	<script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+  	<link rel="stylesheet" href="time-series.css">
+    
+    <title>FE550 Time-Series Assignment</title>
+</head>
+<body>
+	<div class="container">
+  	<div class="header">
+		Shawn Murray * FE-550-WS Temporal/Time-Series Data Visualization * Due Feb-18       
+	</div> <!-- end of header -->
+	<div class="top-container">
+    <BR/><hr>
+    <h4>Description:</h4> 
+	<blockquote>This page demonstrates some chart features using the dimple charting API.  Various formats are used on a small set of time-series data. </blockquote>
+	<h4>Code Inspiration:</h4><blockquote><a href="http://dimplejs.org/examples_viewer.html?id=bars_vertical_floating">http://dimplejs.org/examples_viewer.html?id=bars_vertical_floating</a> </blockquote>
+     <h4>Data Source:</h4> 
+     <blockquote>The data is from sattelite tracking of arctic sea ice, the source is the IJIS website. Please see this link for more information: <a href="http://www.ijis.iarc.uaf.edu/en/index.htm">IJIS</a> 
+	<br>
+    Note: Permission was granted on 2/15/2015 via email to use this data per the IJIS terms of use policy. Link to: <a href="http://www.ijis.iarc.uaf.edu/seaice/extent/plot_v2.csv">Original Data Source</a></blockquote>
+    <h4>Data Manipulation: </h4><blockquote>The data set was trimmed to only include the 1st day of each month and the date was modified to create the x-axis, i.e. just a month value. The data was saved to the file named ice2.csv stored locally with this web page. Only four columns of the data are made available here, but all of the columns are included in the ice2 file for future use. The original ice.csv file is also provided for reference.  
+    </blockquote><hr> 
+    <h4>Arctic Sea Ice Data Set:</h4> <blockquote>
+	<input type="radio" id="radio1" name="year" value="2012" > 2012 (bar)<br>
+	<input type="radio" id="radio2" name="year" value="2013" > 2013 (bubble) <br>
+	<input type="radio" id="radio3" name="year" value="2012" > 2014 (circle) <br>
+	<input type="radio" id="radio4" name="year" value="2000s"checked > 2000s Avg (area)
+	</blockquote><br>
+    <!-- end top-container --></div>
+	<script type="text/javascript">
+	var year_value = "2014";
+	</script>
+  	<div id="chartContainer">
+  	<script type="text/javascript">
+  
+  
+    var svg = dimple.newSvg("#chartContainer", 640, 480);
+    d3.csv("ice2.csv", function (data) {
+      var myChart = new dimple.chart(svg, data);
+      myChart.setBounds(60, 30, 510, 305)
+      var x = myChart.addCategoryAxis("x", "Month");
+      x.addOrderRule(["January", "February", "March", "April", "May", "June","July", "August","September","October","November","December"]);
+      var y = myChart.addMeasureAxis("y", "2000's Average");	
+	  var s = myChart.addSeries(null, dimple.plot.area);
+      myChart.draw(500);
+	  y.titleShape.text("Square Kilometers");
+	  x.titleShape.text("2000's Avg - 1st Day of Each Month");
+    });
+	
+// functions to update charts 
+
+function updateChart1() {
+	//alert(year_value);
+	d3.selectAll("svg > *").remove();
+	d3.csv("ice2.csv", function (data) {
+      var myChart = new dimple.chart(svg, data);
+      myChart.setBounds(60, 30, 510, 305)
+      var x = myChart.addCategoryAxis("x", "Month");
+      x.addOrderRule(["January", "February", "March", "April", "May", "June","July", "August","September","October","November","December"]);
+      var y = myChart.addMeasureAxis("y", "2012");
+	  //var y1 = myChart.addAxis("y", ["2000's Average", "2012"], null);
+	  //var s = myChart.addSeries(null, dimple.plot.bar, [x,y1]);
+      var s = myChart.addSeries("2012", dimple.plot.bar, [x, y]);
+	  s.stacked = false;	
+      myChart.draw(750);
+	  y.titleShape.text("Square Kilometers");
+	  x.titleShape.text("2012 - 1st Day of Each Month");
+		
+    }) 
+}// end function
+
+function updateChart2() {
+	//alert(year_value);
+	d3.selectAll("svg > *").remove();
+	d3.csv("ice2.csv", function (data) {
+      var myChart = new dimple.chart(svg, data);
+      myChart.setBounds(60, 30, 510, 305)
+      var x = myChart.addCategoryAxis("x", "Month");
+      x.addOrderRule(["January", "February", "March", "April", "May", "June","July", "August","September","October","November","December"]);
+      var y = myChart.addMeasureAxis("y", "2013");
+	  //var s = myChart.addSeries(null, dimple.plot.bar, [x,y1]);
+      var t = myChart.addSeries("2013", dimple.plot.bubble, [x, y]);
+	  t.stacked = false;
+      myChart.draw(750);
+	  y.titleShape.text("Square Kilometers");
+	  x.titleShape.text("2013 - 1st Day of Each Month");
+		
+    }) 
+}// end function
+
+function updateChart3() {
+	//alert(year_value);
+	d3.selectAll("svg > *").remove();
+	d3.csv("ice2.csv", function (data) {
+      var myChart = new dimple.chart(svg, data);
+      myChart.setBounds(60, 30, 510, 305)
+      var x = myChart.addCategoryAxis("x", "Month");
+      x.addOrderRule(["January", "February", "March", "April", "May", "June","July", "August","September","October","November","December"]);
+      var y = myChart.addMeasureAxis("y", "2014");	
+	  //myChart.storyboard = new dimple.storyboard(myChart, "Month");
+	  myChart.addSeries("2014", dimple.plot.line);
+      myChart.draw(100);
+	  y.titleShape.text("Square Kilometers");
+	  x.titleShape.text("2014 - 1st Day of Each Month");	
+    }) 
+}// end function
+
+function updateChart4() {
+	window.location.reload()	
+}// end function
+
+<!-- create listeners and refresh when values change -->
+window.onload = function() {
+
+    	var rad1 = document.getElementById('radio1');
+    	var rad2 = document.getElementById('radio2');
+		var rad3 = document.getElementById('radio3');
+		var rad4 = document.getElementById('radio4');
+		
+    	rad1.onclick = handler1;
+    	rad2.onclick = handler2;
+		rad3.onclick = handler3;
+		rad4.onclick = handler4;		
+
+    } // end function
+
+    function handler1() {
+		year_value = document.getElementById('radio1').value;
+		updateChart1();	
+	  //alert(year_value);
+    } // end function
+	function handler2() {
+		year_value = document.getElementById('radio2').value;
+		updateChart2();	
+    } // end function
+	function handler3() {
+		year_value = document.getElementById('radio3').value;
+		updateChart3();	
+    } // end function
+	function handler4() {
+		year_value = document.getElementById('radio4').value;
+		updateChart4();	
+    } // end function	
+	
+	
+  </script>
+<!-- end chart container --></div>
+
+<!-- end container --></div>
+</body>
